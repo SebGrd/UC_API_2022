@@ -3,7 +3,8 @@ const Database = require('../database');
 const SCHEMA = {
     firstname: String,
     lastname: String,
-    description: String
+    description: String,
+    imageUrl: String
 }
 
 class PrivateChefsModel {
@@ -39,6 +40,7 @@ class ChefsManager {
      * @param {string} chef.firstname
      * @param {string} chef.lastname
      * @param {string} chef.description
+     * @param {string} chef.imageUrl
      */
     constructor(chef = {}) {
         this.model = MongooseModel.getInstance().model;
@@ -49,8 +51,16 @@ class ChefsManager {
         return this.chef.save();
     }
 
+    async delete(id) {
+        return await this.model.deleteOne({_id: id});
+    }
+
+    async update(id, chef) {
+        return await this.model.updateOne({_id: id}, chef);
+    }
+
     async getChefs() {
-        return this.model.find();
+        return this.model.find().sort({firstname: 'ASC'});
     }
 }
 
