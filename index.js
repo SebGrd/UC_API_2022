@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const port = 2001;
 const {ChefsManager} = require('./managers/ChefsManager');
+const {MenusManager} = require("./managers/MenusManager");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -79,6 +80,28 @@ app.put('/chefs/:id', async (req, res) => {
     }
 });
 
+// MENUS
+
+app.get('/menus', async (req, res) => {
+    const menusManager = new MenusManager();
+    try {
+        const json = await menusManager.getMenus();
+        res.status(200).json(json);
+    } catch (e) {
+        console.error(e);
+    }
+});
+
+app.post('/menus', async (req, res) => {
+    const {title, chef, starter, plate, dessert} = req.body;
+    const menusManager = new MenusManager({title, chef, starter, plate, dessert});
+    try {
+        const json = await menusManager.save();
+        res.status(200).json(json);
+    } catch (e) {
+        console.error(e);
+    }
+});
 
 app.listen(port, () => {
     console.log(`LBA_usecase listening on port ${port}`)
